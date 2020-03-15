@@ -1,0 +1,5 @@
+"CountryNm","ConfirmedNum","RecentCaseNum","DeathNum","RecentDeathNum","TransmissionMode","TimeStamp"
+"Australia","77","3","3","0","Local transmission","20200309"
+"Australia","122","10","3","0","Local transmission","20200312"
+"Australia","92","15","3","0","Local transmission","20200310"
+"Australia","112","20","3","0","Local transmission","20200311"

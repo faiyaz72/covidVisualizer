@@ -6,6 +6,7 @@ import utils.DataParameters;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
 
@@ -14,12 +15,23 @@ public class Main {
         ArrayList<DataNode> dataList = new ArrayList<>();
         readData(dataList);
 
+        System.out.println("Enter Country Name to generate CSV data");
+        Scanner input = new Scanner(System.in);
+        String country = input.nextLine();
+
+        writeCountryData(dataList, country);
+
+//        writeAllData(dataList);
+
+    }
+
+    private static void writeAllData(ArrayList<DataNode> dataList) {
         File file = new File("../data/sqlData.csv");
 
         try {
             FileWriter outputFile = new FileWriter(file);
             CSVWriter write = new CSVWriter(outputFile);
-            String[] header = {"CountryNm", "ConfirmedNum", "RecentCaseNum", "DeathNum", "RecentDeathNum", "Transmission_Mode", "TimeStamp"};
+            String[] header = {"CountryNm", "ConfirmedNum", "RecentCaseNum", "DeathNum", "RecentDeathNum", "TransmissionMode", "TimeStamp"};
             write.writeNext(header);
 
             for (DataNode dataNode : dataList) {
@@ -31,8 +43,30 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+
+    private static void writeCountryData(ArrayList<DataNode> dataList, String countryNm) {
+        File file = new File("../data/" + countryNm + ".csv");
+
+        try {
+            FileWriter outputFile = new FileWriter(file);
+            CSVWriter write = new CSVWriter(outputFile);
+            String[] header = {"CountryNm", "ConfirmedNum", "RecentCaseNum", "DeathNum", "RecentDeathNum", "TransmissionMode", "TimeStamp"};
+            write.writeNext(header);
+
+            for (DataNode dataNode : dataList) {
+                if (dataNode.getCountryName().equals(countryNm)) {
+                    String[] data = DataParameters.modelToDataConverter(dataNode);
+                    write.writeNext(data);
+                }
+            }
+            write.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void readData(ArrayList<DataNode> dataList) {
         try {
             ArrayList<String> countriesOfInterest = DataParameters.getCountriesOfInterests();

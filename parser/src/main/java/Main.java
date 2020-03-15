@@ -1,4 +1,5 @@
 import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvValidationException;
 import model.DataNode;
 import utils.DataParameters;
@@ -11,11 +12,27 @@ public class Main {
     public static void main(String[] args) {
 
         ArrayList<DataNode> dataList = new ArrayList<>();
-
         readData(dataList);
 
-    }
+        File file = new File("../data/sqlData.csv");
 
+        try {
+            FileWriter outputFile = new FileWriter(file);
+            CSVWriter write = new CSVWriter(outputFile);
+            String[] header = {"CountryNm", "ConfirmedNum", "RecentCaseNum", "DeathNum", "RecentDeathNum", "Transmission_Mode", "TimeStamp"};
+            write.writeNext(header);
+
+            for (DataNode dataNode : dataList) {
+                String[] data = DataParameters.modelToDataConverter(dataNode);
+                write.writeNext(data);
+            }
+            write.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
     private static void readData(ArrayList<DataNode> dataList) {
         try {
             ArrayList<String> countriesOfInterest = DataParameters.getCountriesOfInterests();
@@ -54,6 +71,4 @@ public class Main {
             e.printStackTrace();
         }
     }
-
-
 }

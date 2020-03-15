@@ -17,4 +17,8 @@ public class DataParameters {
 
         return countries;
     }
+
+    public static String getDataPath() {
+        return "../data";
+    }
 }

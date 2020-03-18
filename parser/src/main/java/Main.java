@@ -87,6 +87,7 @@ public class Main {
                 CSVReader csvReader = new CSVReader(fileReader);
                 String dataTimeStamp = DataParameters.fileNameParser(dataFile.getName());
                 String[] nextRecord;
+                System.out.println(dataTimeStamp);
                 while ((nextRecord = csvReader.readNext()) != null) {
                     if (!nextRecord[5].equals("") && countriesOfInterest.contains(nextRecord[0])) {
                         DataNode dataNode = new DataNode();

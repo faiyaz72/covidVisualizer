@@ -18,6 +18,7 @@ public class DataParameters {
         countries.add("Italy");
         countries.add("United States of America");
         countries.add("Australia");
+        countries.add("Republic of Korea");
 
         return countries;
     }

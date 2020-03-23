@@ -1,11 +1,9 @@
-import com.opencsv.exceptions.CsvValidationException;
-
+import Manager.ExportImportManager;
 import constants.DatabaseConstants;
+import constants.FileConstants;
 import dataReaders.CSVDataReader;
 import database.PSqlReader;
-import interfaces.DataProcessor;
 import interfaces.DatabaseReader;
-import model.DataNode;
 import utils.DataFilter;
 import utils.DataParameters;
 
@@ -18,8 +16,11 @@ public class Main {
 
     public static void main(String[] args) {
     	
-    	ArrayList<DataNode> datalist = new ArrayList<>();
     	CSVDataReader csvReader = new CSVDataReader();
+    	DatabaseReader psql = new PSqlReader();
+    	Connection connection = psql.connectDataBase("COVID", "postgres", "Xboxlive72");
+    	ExportImportManager manager = new ExportImportManager(psql, connection, csvReader);
+    	
     	DataFilter datafilter = new DataFilter();
     	datafilter.addCountry("United States of America");
     	datafilter.addCountry("Canada");
@@ -27,18 +28,7 @@ public class Main {
     	datafilter.addCountry("Italy");
     	datafilter.addCountry("Australia");
     	datafilter.addCountry("Bangladesh");
-    			
-//    	DatabaseReader psql = new PSqlReader();
-//    	Connection connection = psql.connectDataBase("COVID", "postgres", "Xboxlive72");
-    	
-    	
-    	
-    	
-    	
-    	DatabaseReader psql = new PSqlReader();
-    	Connection connection = psql.connectDataBase("COVID", "postgres", "Xboxlive72");
-    	String countryNm = "United States of America";
-    	File file = new File("../countryTrends/" + countryNm +".csv");
+    		
     	ArrayList<String> columns = new ArrayList<>();
     	
     	columns.add(DatabaseConstants.TIMESTAMP);
@@ -46,8 +36,10 @@ public class Main {
     	columns.add(DatabaseConstants.CONFIRMED_NUM);
     	columns.add(DatabaseConstants.RECENT_CASE);
     	
-//    	psql.getAllData(connection, file);
-    	psql.getCountryData(connection, file, countryNm, columns);
+//    	String countryNm = "Australia";
+//    	
+    	manager.exportSingleCountryData("Bangladesh", FileConstants.COUNTRY_TRENDS_DIRECTORY, columns);
+//    	manager.importNewCountryData("Bangladesh", FileConstants.STORED_DATA_DIRECTORY);
         
         
 

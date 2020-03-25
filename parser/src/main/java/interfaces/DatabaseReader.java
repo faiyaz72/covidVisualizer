@@ -2,6 +2,7 @@ package interfaces;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.DataNode;
@@ -17,4 +18,6 @@ public interface DatabaseReader {
 	public void getMultipleCountryData();
 	
 	public void writeNewData(Connection databaseConnection, ArrayList<DataNode> dataList);
+
+	public ArrayList<String> getExistingCountriesInDatabase(Connection databaseConnection);
 }

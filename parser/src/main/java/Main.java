@@ -20,14 +20,6 @@ public class Main {
     	DatabaseReader psql = new PSqlReader();
     	Connection connection = psql.connectDataBase("COVID", "postgres", "Xboxlive72");
     	ExportImportManager manager = new ExportImportManager(psql, connection, csvReader);
-    	
-    	DataFilter datafilter = new DataFilter();
-    	datafilter.addCountry("United States of America");
-    	datafilter.addCountry("Canada");
-    	datafilter.addCountry("Republic of Korea");
-    	datafilter.addCountry("Italy");
-    	datafilter.addCountry("Australia");
-    	datafilter.addCountry("Bangladesh");
     		
     	ArrayList<String> columns = new ArrayList<>();
     	
@@ -38,8 +30,11 @@ public class Main {
     	
 //    	String countryNm = "Australia";
 //    	
-    	manager.exportSingleCountryData("Bangladesh", FileConstants.COUNTRY_TRENDS_DIRECTORY, columns);
-//    	manager.importNewCountryData("Bangladesh", FileConstants.STORED_DATA_DIRECTORY);
+    	manager.exportSingleCountryData("Canada", FileConstants.COUNTRY_TRENDS_DIRECTORY, columns);
+//    	manager.importNewCountryData("Pakistan", FileConstants.STORED_DATA_DIRECTORY);
+//    	manager.updateExistingData(FileConstants.BULK_DATA_DIRECTORY);
+    	
+    	
         
         
 

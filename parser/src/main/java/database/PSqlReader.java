@@ -44,8 +44,7 @@ public class PSqlReader implements DatabaseReader {
 				"WHERE c1.\"CountryNm\" = '" + countryNm + "'\r\n" + 
 				"order by c1.\"TimeStamp\" asc;";
 		try {
-			Statement statement = databaseConnection.createStatement();
-			performQuery(databaseConnection, datalist, sql);
+			performAllQuery(databaseConnection, datalist, sql);
 			FileWriter outputFile = new FileWriter(destinationFile);
 			CSVWriter write = new CSVWriter(outputFile);
 			String[] header = arrangeHeaders(columns);
@@ -102,7 +101,7 @@ public class PSqlReader implements DatabaseReader {
 				"from \"covidData\".\"CaseData\" c1\r\n" + 
 				"order by c1.\"CountryNm\", c1.\"TimeStamp\" asc;";
 		try {
-			performQuery(databaseConnection, datalist, sql);
+			performAllQuery(databaseConnection, datalist, sql);
 			FileWriter outputFile = new FileWriter(destinationFile);
 			CSVWriter write = new CSVWriter(outputFile);
 			String[] header = {DatabaseConstants.COUNTRY_NM, DatabaseConstants.TIMESTAMP, DatabaseConstants.CONFIRMED_NUM, DatabaseConstants.RECENT_CASE,
@@ -123,51 +122,53 @@ public class PSqlReader implements DatabaseReader {
 		
 	}
 
-	private void performQuery(Connection databaseConnection, ArrayList<DataNode> datalist, String sql) throws SQLException {
+	private void performAllQuery(Connection databaseConnection, ArrayList<DataNode> datalist, String sql) throws SQLException {
 		Statement statement = databaseConnection.createStatement();
 		ResultSet resultSet = statement.executeQuery(sql);
 		while (resultSet.next()) {
 			DataNode data = new DataNode();
-			extractData(resultSet, data);
+			extractFullData(resultSet, data);
 			datalist.add(data);
 		}
 	}
 
-	private void extractData(ResultSet resultSet, DataNode data) throws SQLException {
+	private void extractFullData(ResultSet resultSet, DataNode data) throws SQLException {
 		
-		if (resultSet.getString(DatabaseConstants.COUNTRY_NM) != null) {
-			data.setCountryName(resultSet.getString(DatabaseConstants.COUNTRY_NM));
-		}
-		
-		if (resultSet.getDate(DatabaseConstants.TIMESTAMP) != null) {
-			data.setDataTimeStamp(resultSet.getDate(DatabaseConstants.TIMESTAMP));
-		}
-		
-		if (resultSet.getString(DatabaseConstants.TRASNMISSION_MODE) != null) {
-			data.setModeOfTransmission(resultSet.getString(DatabaseConstants.TRASNMISSION_MODE));
-		}
-		
-		if (resultSet.getInt(DatabaseConstants.CONFIRMED_NUM) != 0) {
-			data.setNumConfirmed(resultSet.getInt(DatabaseConstants.CONFIRMED_NUM));
-		}
-		
-		if (resultSet.getInt(DatabaseConstants.RECENT_CASE) != 0) {
-			data.setNumRecentCase(resultSet.getInt(DatabaseConstants.RECENT_CASE));
-		}
-		
-		if (resultSet.getInt(DatabaseConstants.DEATH_NUM) != 0) {
-			data.setNumDeath(resultSet.getInt(DatabaseConstants.DEATH_NUM));
-		}
-		
-		if (resultSet.getInt(DatabaseConstants.RECENT_DEATH_NUM) != 0) {
-			data.setRecentDeath(resultSet.getInt(DatabaseConstants.RECENT_DEATH_NUM));
-		}
+		data.setCountryName(resultSet.getString(DatabaseConstants.COUNTRY_NM));
+		data.setDataTimeStamp(resultSet.getDate(DatabaseConstants.TIMESTAMP));
+		data.setModeOfTransmission(resultSet.getString(DatabaseConstants.TRASNMISSION_MODE));		
+		data.setNumConfirmed(resultSet.getInt(DatabaseConstants.CONFIRMED_NUM));
+		data.setNumRecentCase(resultSet.getInt(DatabaseConstants.RECENT_CASE));
+		data.setNumDeath(resultSet.getInt(DatabaseConstants.DEATH_NUM));
+		data.setRecentDeath(resultSet.getInt(DatabaseConstants.RECENT_DEATH_NUM));
 		
 	}
-
+	
 	@Override
 	public void getMultipleCountryData() {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	public ArrayList<String> getExistingCountriesInDatabase(Connection databaseConnection) {
+		
+		ArrayList<String> countries = new ArrayList<>();
+		String sql = "select distinct c1.\"CountryNm\"\n" + 
+				"from \"covidData\".\"CaseData\" c1;";
+		try {
+			Statement statement = databaseConnection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				countries.add(resultSet.getString(DatabaseConstants.COUNTRY_NM));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+	        System.err.println(e.getClass().getName()+": "+e.getMessage());
+	        System.exit(0);
+		}
+		
+		return countries;
 		
 	}
 
